@@ -1,3 +1,13 @@
 rootProject.name = 'CameraProject'
+include ':react-native-image-resizer'
+project(':react-native-image-resizer').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-image-resizer/android')
+include ':react-native-native-video-player'
+project(':react-native-native-video-player').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-native-video-player/android')
+include ':react-native-thumbnail'
+project(':react-native-thumbnail').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-thumbnail/android')
+include ':react-native-fetch-blob'
+project(':react-native-fetch-blob').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fetch-blob/android')
+include ':react-native-camera'
+project(':react-native-camera').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-camera/android')
 
 include ':app'

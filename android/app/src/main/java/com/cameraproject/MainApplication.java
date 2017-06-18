@@ -3,6 +3,11 @@ package com.cameraproject;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import fr.bamlab.rnimageresizer.ImageResizerPackage;
+import com.wog.videoplayer.VideoPlayerPackage;
+import com.reactlibrary.RNThumbnailPackage;
+import com.RNFetchBlob.RNFetchBlobPackage;
+import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -22,7 +27,12 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
-          new MainReactPackage()
+          new MainReactPackage(),
+            new ImageResizerPackage(),
+            new VideoPlayerPackage(),
+            new RNThumbnailPackage(),
+            new RNFetchBlobPackage(),
+            new RCTCameraPackage()
       );
     }
   };
