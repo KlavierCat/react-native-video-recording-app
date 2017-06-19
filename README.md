@@ -6,5 +6,7 @@ It needs to be run on a real device instead of a simulator / emulator for the vi
 To run, follow the following steps:
 1. clone the repository
 2. CD into the directory, `npm install`
-3. for running on your Android device, after connecting your device, run 'react-native run-android'
+3. for running on your Android device, after connecting your device, run `react-native run-android`
 4. for running on your iOS device, first open the project inside the `iOS` folder in Xcode and change the signing ceritificate to your valid ceritifcate, then you can run it from Xcode itself.
+
+For the text overlay feature, switch to the `overlay-text` branch. There is currently 1 checkPropTypes warning related to LayoutAnimation in this branch, which is a known issue whose fix has not gone into the latest release of React Native yet. For details, see [here](https://github.com/facebook/react-native/issues/14381).
