@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
+  Text,
   Image,
   View,
   TouchableOpacity,
-  Platform
+  Platform,
+  NativeModules,
+  LayoutAnimation,
+  Dimensions
 } from 'react-native';
 import Camera from 'react-native-camera';
 import { RNS3 } from '../aws3/RNS3';
@@ -13,16 +17,45 @@ import RNAssetThumbnail from 'react-native-asset-thumbnail';
 import ImageResizer from 'react-native-image-resizer';
 
 const { dateToString } = require('../aws3/DateUtils');
+const { UIManager } = NativeModules;
+const TimerMixin = require('react-timer-mixin');
+
+UIManager.setLayoutAnimationEnabledExperimental &&
+  UIManager.setLayoutAnimationEnabledExperimental(true);
 
 export default class CameraView extends Component {
+  mixins = [TimerMixin];
+
   constructor(props) {
     super(props);
 
     this.camera = null;
 
     this.state = {
-      isRecording: false
+      isRecording: false,
+      textLeft: Dimensions.get('window').width,
     };
+  }
+
+  handleTextAnimation = () => {
+    LayoutAnimation.spring();
+    this.setState({
+      isRecording: this.state.isRecording,
+      textLeft: this.state.textLeft - 1,
+    });
+  }
+
+  startScrollingText = () => {
+    this.timer = TimerMixin.setInterval(this.handleTextAnimation, 50);
+  }
+
+  stopScrollingText = () => {
+    TimerMixin.clearInterval(this.timer);
+    LayoutAnimation.spring();
+    this.setState({
+      isRecording: this.state.isRecording,
+      textLeft: Dimensions.get('window').width,
+    });
   }
 
   static navigationOptions = {
@@ -87,27 +120,26 @@ export default class CameraView extends Component {
     }).catch(err => console.error(err));
   }
 
-  takePicture = () => {
+  startRecording = (params) => {
     if (this.camera) {
-      this.camera.capture()
-        .then((data) => console.log(data))
-        .catch(err => console.error(err));
-    }
-  }
-
-  startRecording = () => {
-    if (this.camera) {
+      if (params.text.length !== 0 ) {
+        this.startScrollingText(); 
+      }
       this.camera.capture({mode: Camera.constants.CaptureMode.video, totalSeconds: 30, audio: true})
           .then((data) => {console.log(data); this.upload(data)})
           .catch(err => console.error(err));
       this.setState({
-        isRecording: true
+        isRecording: true,
+        textLeft: this.state.textLeft
       });
     }
   }
 
-  stopRecording = () => {
+  stopRecording = (params) => {
     if (this.camera) {
+      if (params.text.length !== 0) {
+        this.stopScrollingText();
+      }
       this.camera.stopCapture();
       this.setState({
         isRecording: false
@@ -116,6 +148,7 @@ export default class CameraView extends Component {
   }
 
   render () {
+    const { params } = this.props.navigation.state;
     return (
       <View style={styles.cameraContainer}>
         <Camera
@@ -126,13 +159,20 @@ export default class CameraView extends Component {
           captureMode={Camera.constants.CaptureMode.video}
           aspect={Camera.constants.Aspect.fill}>
         </Camera>
+        {
+          (params.text.length !== '')
+          &&
+          <View style={[styles.overlay, styles.topOverlay, {marginLeft: this.state.textLeft}]}>
+            <Text style={styles.textOverlay}>{params.text}</Text>
+          </View>
+        }
         <View style={[styles.overlay, styles.bottomOverlay]}>
           {
               !this.state.isRecording
               &&
               <TouchableOpacity
                   style={styles.captureButton}
-                  onPress={this.startRecording}
+                  onPress={this.startRecording.bind(this, params)}
               >
                 <Image
                     source={require('../assets/ic_videocam_36pt.png')}
@@ -141,7 +181,7 @@ export default class CameraView extends Component {
               ||
               <TouchableOpacity
                   style={styles.captureButton}
-                  onPress={this.stopRecording}
+                  onPress={this.stopRecording.bind(this, params)}
               >
                 <Image
                     source={require('../assets/ic_stop_36pt.png')}
@@ -165,11 +205,22 @@ const styles = StyleSheet.create({
   cameraContainer: {
     flex: 1,
     flexDirection: 'row',
+    backgroundColor: 'black',
   },
   preview: {
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center'
+  },
+  topOverlay: {
+    top: 0,
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    width: 10000,
+    padding: 5,
+    height: 25,
   },
   bottomOverlay: {
     bottom: 0,
@@ -177,6 +228,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  textOverlay: {
+    color: 'white',
+    fontSize: 15,
   },
   captureButton: {
     padding: 15,
