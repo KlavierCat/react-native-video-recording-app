@@ -28,18 +28,18 @@ export default class HomeView extends Component {
         </View>
         <View style={styles.overlay}>
           <Image source={require('../assets/stride.png')} style={styles.logoPic} />
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => navigate('Camera')}
-            >
-              <Text style={styles.buttonText}>Record a video</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => navigate('VideoList')}
-            >
-              <Text style={styles.buttonText}>View videos</Text>
-            </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigate('Camera', {text: this.state.text})}
+          >
+            <Text style={styles.buttonText}>Record a video</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigate('VideoList')}
+          >
+            <Text style={styles.buttonText}>View videos</Text>
+          </TouchableOpacity>
           <TextInput
             style={styles.inputbox}
             placeholder='Type some text to overlay the video...'
@@ -102,5 +102,6 @@ const styles = StyleSheet.create({
     width: 300,
     color: '#f2f2f2',
     fontSize: 16,
+    height: 40,
   },
 });
