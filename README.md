@@ -8,3 +8,4 @@ To run, follow the following steps:
 2. CD into the directory, `npm install`
 3. for running on your Android device, after connecting your device, run 'react-native run-android'
 4. for running on your iOS device, first open the project inside the `iOS` folder in Xcode and change the signing ceritificate to your valid ceritifcate, then you can run it from Xcode itself.
+5. when running the app in Xcode, you might run into an error `'AppDelegate.h' file not found RNVideoPlayer.h`. You can solve this by following [this comment](https://github.com/BondGoat/react-native-native-video-player/issues/4#issuecomment-309253922) in the related GitHub issue for that library.
